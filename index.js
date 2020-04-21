@@ -26,6 +26,8 @@ let persons = [
 	},
 ]
 
+app.use(express.json())
+
 app.get('/', (req, res) => {
 	res.json({Status: 'Working!'})
 })
@@ -53,6 +55,42 @@ app.delete('/api/persons/:id', (req, res) => {
 	persons = persons.filter(person => person.id !== id)
 
 	res.status(204).end()
+})
+
+const generateId = () => {
+	let id = Math.floor(Math.random() * 10000)
+	const arrayIds = persons.filter(person => person.id === id)
+
+	if(arrayIds.length !== 0){
+		id = generateId()
+	}
+
+	return id
+}
+
+app.post('/api/persons', (req, res) => {
+	const body = req.body
+	console.log(body)
+
+	if (!body.name){
+		return res.status(400).json({
+			Error: "Name or number missing!"
+		})
+	}
+
+	const person = {
+		name: body.name,
+		number: body.number,
+		id: generateId()
+	}
+
+	persons = persons.concat(person)
+
+	res.json({
+		name: body.name,
+		id: person.id,
+		status: "Added successfully!"
+	})
 })
 
 app.get('/api/info', (req, res) => {
