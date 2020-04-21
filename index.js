@@ -68,13 +68,27 @@ const generateId = () => {
 	return id
 }
 
+const checkNameExists = (name) => {
+	const names = persons.filter(person => person.name === name)
+	if(names.length === 0){
+		return false
+	} else {
+		return true
+	}
+}
+
 app.post('/api/persons', (req, res) => {
 	const body = req.body
-	console.log(body)
 
-	if (!body.name){
+	if ((!body.name) || (!body.number)){
 		return res.status(400).json({
 			Error: "Name or number missing!"
+		})
+	}
+
+	if(checkNameExists(body.name)){
+		return res.status(400).json({
+			Error: "Name already exists!"
 		})
 	}
 
