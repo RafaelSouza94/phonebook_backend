@@ -37,12 +37,8 @@ morgan.token('body', (req) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-app.get('/', (req, res) => {
-	res.json({Status: 'Working!'})
-})
-
 app.get('/api', (req, res) => {
-	res.json({API: "Phonebook persons API"})
+	res.json({Status: 'Working!'})
 })
 
 app.get('/api/persons', (req, res) => {
