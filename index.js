@@ -96,24 +96,19 @@ app.post('/api/persons', (req, res) => {
 		})
 	}
 
-	if(checkNameExists(body.name)){
+	/*if(checkNameExists(body.name)){
 		return res.status(400).json({
 			Error: "Name already exists!"
 		})
-	}
+	}*/
 
-	const person = {
+	const person = new Person({
 		name: body.name,
 		number: body.number,
-		id: generateId()
-	}
-
-	persons = persons.concat(person)
-
-	res.json({
-		name: body.name,
-		id: person.id,
-		status: "Added successfully!"
+	})
+	
+	person.save().then(savedPerson => {
+		res.json(savedPerson.toJSON())
 	})
 })
 
