@@ -129,14 +129,19 @@ app.put('/api/persons/:id', (request, response, next) => {
 		.catch(error => next(error))
 })
 
+
 app.get('/api/info', (req, res) => {
 	let date = new Date()
 	date = date.toString()
-	res.send(
-		`Phonebook has info for ${persons.length} people.
-		<br />
-		<br />
-		${date}`)
+	Person.estimatedDocumentCount().
+		then(result => {
+				res.send(
+					`Phonebook has info for ${result} people.
+					<br />
+					<br />
+					${date}`)
+	})
+
 })
 
 const unknownEndpoint = (request, response) => {
