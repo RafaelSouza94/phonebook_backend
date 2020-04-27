@@ -89,7 +89,7 @@ const checkNameExists = (name) => {
 	}
 }
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
 	const body = req.body
 
 	if ((!body.name) || (!body.number)){
@@ -98,12 +98,6 @@ app.post('/api/persons', (req, res) => {
 		})
 	}
 
-	/*if(checkNameExists(body.name)){
-		return res.status(400).json({
-			Error: "Name already exists!"
-		})
-	}*/
-
 	const person = new Person({
 		name: body.name,
 		number: body.number,
@@ -111,7 +105,7 @@ app.post('/api/persons', (req, res) => {
 	
 	person.save().then(savedPerson => {
 		res.json(savedPerson.toJSON())
-	})
+	}).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -155,7 +149,9 @@ const errorHandler = (error, request, response, next) => {
 
 	if (error.name === 'CastError') {
 		return response.status(400).send({ Error: 'Malformed id' })
-	}
+	} else if (error.name === 'ValidationError') {
+		return response.status(400).json({ Error: error.message })
+	} 
 
 	next(error)
 }
